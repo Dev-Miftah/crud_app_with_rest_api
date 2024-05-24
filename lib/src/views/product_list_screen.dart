@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crud_app_with_rest_api_assignment13/src/constant/colors.dart';
 import 'package:crud_app_with_rest_api_assignment13/src/views/add_product_screen.dart';
 import 'package:crud_app_with_rest_api_assignment13/src/views/update_product_screen.dart';
+import 'package:crud_app_with_rest_api_assignment13/src/widgets/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
@@ -36,7 +38,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
           padding: const EdgeInsets.all(5),
           child: Visibility(
             visible: _getProductInProgress == false,
-            replacement: const Center(child: CircularProgressIndicator()),
+            replacement: const Center(child: ShimmerWidget()),
             child: ListView.builder(
               itemCount: productList.length,
                 itemBuilder: (context, index) {
@@ -45,18 +47,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   child: Container(
                     height: 120,
                     width: screenWidth,
-                    decoration: BoxDecoration(
-                      color: kWhiteColor,
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: kBlackColor.withOpacity(0.2),
-                          offset: const Offset(0, 1),
-                          spreadRadius: 0.5,
-                          blurRadius: 0.8
-                        )
-                      ]
-                    ),
+                    decoration: buildBoxDecoration(),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -65,7 +56,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                           width: 120,
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.only(topLeft: Radius.circular(15),bottomLeft: Radius.circular(15)),
-                            image: DecorationImage(image: NetworkImage(productList[index].image??''), fit: BoxFit.fill)
+                            image: DecorationImage(image: CachedNetworkImageProvider(productList[index].image??''), fit: BoxFit.fill)
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -74,14 +65,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Flexible(
                                   child: Text(productList[index].productName ?? '',
                                   style: const TextStyle(
                                       fontSize: 16,
                                   overflow: TextOverflow.ellipsis),
-                                    maxLines: 2,
+                                    maxLines: 1,
                                   ),
                                 ),
                                 Text('Unit Price: ${productList[index].unitPrice}',
@@ -137,6 +128,21 @@ class _ProductListScreenState extends State<ProductListScreen> {
         ),
     );
   }
+
+  BoxDecoration buildBoxDecoration() {
+    return BoxDecoration(
+                    color: kWhiteColor,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: kBlackColor.withOpacity(0.2),
+                        offset: const Offset(0, 1),
+                        spreadRadius: 0.5,
+                        blurRadius: 0.8
+                      )
+                    ]
+                  );
+  }
   Future<void> _getProductList()async{
     _getProductInProgress = true;
     setState(() {});
@@ -154,7 +160,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
       }
       _getProductInProgress = false;
       setState(() {});
-
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content:Text('Product loading failed! Try & Refresh again.')
@@ -168,9 +173,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
         'https://crud.teamrabbil.com/api/v1/DeleteProduct/$productId';
     Uri uri = Uri.parse(_deleteProductUrl);
     Response response = await get(uri);
-    print(response.statusCode);
-    print(response.body);
-
     if (response.statusCode == 200) {
       _getProductList();
     } else {
@@ -181,7 +183,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
       );
     }
   }
-
 
   void _showDeleteConfirmationDialog(String productId){
     showDialog(context: context, builder: (context) {
