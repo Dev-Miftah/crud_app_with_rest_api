@@ -12,6 +12,7 @@ class CustomTextField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       validator: validator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         hintText: text,
         labelText: text,
