@@ -1,4 +1,5 @@
 import 'package:crud_app_with_rest_api_assignment13/src/constant/colors.dart';
+import 'package:crud_app_with_rest_api_assignment13/src/widgets/product_card-decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -18,18 +19,7 @@ class ShimmerWidget extends StatelessWidget {
             child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Container(height: 120,
-                  decoration: BoxDecoration(
-                      color: kWhiteColor,
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                            color: kBlackColor.withOpacity(0.2),
-                            offset: const Offset(0, 1),
-                            spreadRadius: 0.5,
-                            blurRadius: 0.8
-                        )
-                      ]
-                  ),
+                  decoration: productCardDecoration()
                 )),
           );
         });

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
 import '../data_model/product_model.dart';
+import '../widgets/product_card-decoration.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -47,7 +48,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   child: Container(
                     height: 120,
                     width: screenWidth,
-                    decoration: buildBoxDecoration(),
+                    decoration: productCardDecoration(),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -129,20 +130,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
     );
   }
 
-  BoxDecoration buildBoxDecoration() {
-    return BoxDecoration(
-                    color: kWhiteColor,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: kBlackColor.withOpacity(0.2),
-                        offset: const Offset(0, 1),
-                        spreadRadius: 0.5,
-                        blurRadius: 0.8
-                      )
-                    ]
-                  );
-  }
   Future<void> _getProductList()async{
     _getProductInProgress = true;
     setState(() {});
